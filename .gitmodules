@@ -1,0 +1,3 @@
+[submodule "couchbase-data-access-provider"]
+	path = couchbase-data-access-provider
+	url = https://github.com/curityio/couchbase-data-access-provider.git

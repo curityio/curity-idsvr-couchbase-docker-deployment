@@ -1,0 +1,52 @@
+version: '3.9'
+services:
+  reverse-proxy: # nginx reverse proxy
+    container_name: reverse-proxy
+    depends_on: 
+      - curity-idsvr-admin
+      - curity-idsvr-runtime
+    image: reverse-proxy:local
+    build:
+      context: .
+      dockerfile: ./reverse-proxy/Dockerfile
+    ports:
+      - 443:443
+    restart: always
+
+  curity-idsvr-admin: # admin node
+    container_name: curity-idsvr-admin
+    image: curity-idsvr:local
+    command: ["sh", "-c", "idsvr -s admin"]
+    build: 
+      context: idsvr-config
+    environment:
+      PASSWORD: password1
+      LOGGING_LEVEL: DEBUG
+    links:
+      - couchbase-db
+    restart: always
+  
+  curity-idsvr-runtime: # runtime-node
+    container_name: curity-idsvr-runtime
+    image: curity-idsvr:local
+    deploy:
+      replicas: 1
+    build: 
+      context: idsvr-config
+    environment:
+      SERVICE_ROLE: default
+      LOGGING_LEVEL: DEBUG
+    links:
+      - couchbase-db
+    restart: always
+
+  couchbase-db: # couchbase database
+    container_name: couchbase-db
+    image: couchbase/server:enterprise-7.2.4
+    volumes:
+      - ./couchbase-vol:/opt/couchbase/var
+    ports:
+      - 8091-8096:8091-8096
+      - 11207:11207
+      - 11210-11211:11210-11211
+    restart: always
