@@ -1,0 +1,9 @@
+couchbase-vol
+idsvr-config/license.json
+certs/*.key
+certs/*.pem
+certs/*.csr
+certs/*.srl
+backups
+idsvr-config/lib
+.vscode
