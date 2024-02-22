@@ -14,7 +14,7 @@
  #  See the License for the specific language governing permissions and
  #  limitations under the License.
 
-# This prevents accidental commit of sensitive data developers
+# This prevents accidental commit of sensitive data by developers
 
 git diff --cached --name-only | while read FILE; do
 
