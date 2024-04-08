@@ -63,8 +63,8 @@ pre_requisites_check() {
     java_version=$(JAVA -version 2>&1 | sed -E -n 's/.* version "([^.-]*).*"/\1/p' | cut -d' ' -f1)
 
     # Check if the Java version is 17
-    if [[ "$java_version" != "17" ]]; then
-      echo "Error: Java 17 is required to package the couchbase data source plugin"
+    if [[ "$java_version" != "21" ]]; then
+      echo "Error: Java 21 is required to package the couchbase data source plugin"
       echo "Current Java major version set is : $java_version"
       exit 1
     fi
@@ -99,9 +99,11 @@ generate_self_signed_certificates() {
 }
 
 package_couchbase_datasource_plugin() {
-  echo -e "Running mvn package -Dmaven.test.skip in 'couchbase-data-access-provider' directory\n"
-  mvn package -Dmaven.test.skip -f couchbase-data-access-provider 
-  cp -r couchbase-data-access-provider/target/lib/ idsvr-config/lib
+  echo -e "Running ./gradlew createPluginDir in 'couchbase-data-access-provider' directory\n"
+  cd couchbase-data-access-provider
+  ./gradlew createPluginDir
+  cp -r build/curity-couchbase-plugin ../idsvr-config/lib
+  cd ..
 }
 
 build_environment() {
