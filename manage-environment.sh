@@ -91,6 +91,10 @@ is_pki_already_available() {
   fi
 }
 
+generate_cluster_xml() {
+  docker run --rm curity.azurecr.io/curity/idsvr:9.2.0 genclust -c curity-idsvr-admin > idsvr-config/cluster.xml
+}
+
 generate_self_signed_certificates() {
   if ! is_pki_already_available; then
     echo -e "Generating necessary self-signed certificates for secure communication ..\n"
@@ -185,6 +189,7 @@ case $1 in
   startup_message
   pre_requisites_check
   generate_self_signed_certificates
+  generate_cluster_xml
   package_couchbase_datasource_plugin
   build_environment
   environment_info

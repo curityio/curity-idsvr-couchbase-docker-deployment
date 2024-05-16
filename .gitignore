@@ -21,3 +21,4 @@ certs/*.srl
 backups
 idsvr-config/lib
 .vscode
+idsvr-config/cluster.xml
