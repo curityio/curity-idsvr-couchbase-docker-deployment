@@ -106,7 +106,7 @@ package_couchbase_datasource_plugin() {
   echo -e "Running ./gradlew createPluginDir in 'couchbase-data-access-provider' directory\n"
   cd couchbase-data-access-provider
   ./gradlew createPluginDir
-  cp -r build/curity-couchbase-plugin ../idsvr-config/lib
+  cp -r build/curity-couchbase-plugin/ ../idsvr-config/lib
   cd ..
 }
 
@@ -147,6 +147,8 @@ idsvr_backup() {
 tear_down_environment() {
   read -p "containers & images would be deleted, Are you sure ? [Y/y N/n] :" -n 1 -r
   echo -e "\n"
+  rm -rf idsvr-config/lib
+  rm -rf idsvr-config/cluster.xml
 
   if [[ $REPLY =~ ^[Yy]$ ]]; then
     # Take backup before deletion if the containers are running
