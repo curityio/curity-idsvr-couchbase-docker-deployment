@@ -15,7 +15,7 @@
  #
 
 # Get the Curity latest base image
-FROM curity.azurecr.io/curity/idsvr:9.0.0
+FROM curity.azurecr.io/curity/idsvr:9.2.0
 
 # Copy the license to load at startup
 COPY license.json /opt/idsvr/etc/init/license/
