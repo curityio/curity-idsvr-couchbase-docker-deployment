@@ -58,6 +58,13 @@
       <type xmlns:auth="https://curity.se/ns/conf/profile/authentication">auth:authentication-service</type>
       <settings>
         <authentication-service xmlns="https://curity.se/ns/conf/profile/authentication">
+          <authenticators>
+            <authenticator>
+              <id>username</id>
+              <username xmlns="https://curity.se/ns/ext-conf/username">
+              </username>
+            </authenticator>
+          </authenticators>
           <protocols>
             <protocol>
               <id>default-simple-protocol</id>
@@ -134,6 +141,10 @@
               <description>OpenId Connect phone scope</description>
               <claims>phone_number</claims>
               <claims>phone_number_verified</claims>
+            </scope>
+            <scope>
+              <id>read</id>
+              <description>read scope</description>
             </scope>
             <scope>
               <id>profile</id>
@@ -311,6 +322,23 @@
             <expose-metadata>
             </expose-metadata>
           </openid-connect>
+          <client-store>
+            <config-backed>
+              <client>
+                <id>oauth-tools</id>
+                <secret>s3cr3t</secret>
+                <redirect-uris>oauth.tools://app/callback/code</redirect-uris>
+                <redirect-uris>http://localhost/callback</redirect-uris>
+                <user-authentication />
+                <scope>read</scope>
+                <capabilities>
+                  <code/>
+                  <client-credentials/>
+                  <introspection/>
+                </capabilities>
+              </client>
+            </config-backed>
+          </client-store>
         </authorization-server>
       </settings>
       <endpoints>
@@ -360,13 +388,23 @@
           <jwt-issuer-settings>
             <signing-key-id>default-signing-key</signing-key-id>
           </jwt-issuer-settings>
-          <default-data-source>default-datasource</default-data-source>
+          <default-data-source>couchbase</default-data-source>
         </default-token-issuer>
       </token-issuers>
     </profile>
   </profiles>
   <facilities xmlns="https://curity.se/ns/conf/base">
     <data-sources>
+      <data-source>
+        <id>couchbase</id>
+        <couchbase xmlns="https://curity.se/ns/ext-conf/couchbase">
+          <claim-query>SELECT * FROM `[bucket]`.`[collection]`.`[scope]` WHERE META().id = :subject</claim-query>
+          <host>couchbase-db</host>
+          <password>password1</password>
+          <use-tls>false</use-tls>
+          <user-name>admin</user-name>
+        </couchbase>
+      </data-source>
       <data-source>
         <id>default-datasource</id>
         <jdbc xmlns="https://curity.se/ns/ext-conf/jdbc">

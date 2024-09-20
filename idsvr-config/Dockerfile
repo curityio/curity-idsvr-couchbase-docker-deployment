@@ -15,13 +15,16 @@
  #
 
 # Get the Curity latest base image
-FROM curity.azurecr.io/curity/idsvr:9.2.0
+FROM curity.azurecr.io/curity/idsvr:9.4.0
 
 # Copy the license to load at startup
 COPY license.json /opt/idsvr/etc/init/license/
 
 # Copy idsvr custom config 
 COPY *.xml /opt/idsvr/etc/init/
+
+# Copy idsvr custom config 
+COPY log-config/log4j2.xml /opt/idsvr/etc/
 
 # Copy couchbase datasource plugin
 COPY lib /opt/idsvr/usr/share/plugins/couchbase
