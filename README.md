@@ -108,17 +108,30 @@ flows needs to performed. This can be done using the oauth.tools app, or any OAu
 some examples of what can quickly tested with this deployment. This is not a full list of test cases, but can be used to
 assert the behavior of the plugin.
 
+### Checkout the plugin branch
+Make sure you are testing the latest changes or correct branch of the plugin. The plugin is pulled in as a submodule in this repo which might not have the changes you are testing.
+
+```bash
+cd couchbase-data-access-provider 
+git checkout main
+git pull origin main
+cd -
+./manage-environment.sh --stop
+./manage-environment.sh --install
+./manage-environment.sh --start
+```
+
 ### Client Credentials flow
 This flow will create a `Delegation` and `Token` using the Couchbase plugin
 
-```
+```bash
 curl -k https://login.curity.local/oauth/v2/oauth-token -d 'grant_type=client_credentials&scope=read&client_id=oauth-tools&client_secret=s3cr3t'
 ```
 
 ### Token introspection
 This flow will lookup a specific `Delegation` and `Token` using the Couchbase plugin. use the `access_token` received in
 the `client_credentials`request above.
-```
+```bash
 curl -k https://login.curity.local/oauth/v2/oauth-introspect -d 'client_id=oauth-tools&client_secret=s3cr3t&token=<TOKEN>'
 ```
 
@@ -134,7 +147,7 @@ This part tests that its possible to create and use a  `Session` and the creatio
 http://localhost/callback with a `code` parameter. Use the `code` parameter in the next request. The `code` is only
 valid for 30 seconds in the default config.
 
-```
+```bash
 curl -k https://login.curity.local/oauth/v2/oauth-token -d 'grant_type=authorization_code&client_id=oauth-tools&client_secret=s3cr3t&redirect_uri=http%3A%2F%2Flocalhost%2Fcallback&code=<CODE>'
 ```
 This request will return an `access_token` and `refresh_token`, make sure both tokens are usable in the token
@@ -144,7 +157,8 @@ This part tests that its possible to lookup a `Nonce` and the creation of a `Del
 
 ### Refresh token
 The `refresh_token` received in the Code flow can be used to obtain new `access_tokens`. Run this command to test it.
-```
+
+```bash
 curl -k https://login.curity.local/oauth/v2/oauth-token -d 'grant_type=refresh_token&client_id=oauth-tools&client_secret=s3cr3t&refresh_token=<REFRESH_TOKEN>'
 ```
 The request should return both a new `access_token` and a new `refresh_token`. Repeating the request with the old
