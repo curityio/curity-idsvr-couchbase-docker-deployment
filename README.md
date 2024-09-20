@@ -124,26 +124,33 @@ curl -k https://login.curity.local/oauth/v2/oauth-introspect -d 'client_id=oauth
 
 ### Code flow
 This flow will authenticate a user in the browser, and redirect to the provided `redirect_uri` with a code, which will
-have to be redeemed in the next request. The browser part will use the `Session` and `Nonce` parts of the plugin.
-Follow this link in a browser: https://login.curity.local/oauth/v2/oauth-authorize?scope=read&client_id=oauth-tools&response_type=code&redirect_uri=http://localhost/callback
-After performing the authentication (in the default config, just enter any username), the browser will redirect to
-http://localhost/callback with a `code` parameter. Use the `code` parameter in the next request. THe `code` is only
+have to be redeemed in the next request.
+
+* Follow this link in a browser: https://login.curity.local/oauth/v2/oauth-authorize?scope=read&client_id=oauth-tools&response_type=code&redirect_uri=http://localhost/callback
+
+This part tests that its possible to create and use a  `Session` and the creation of a `Nonce` using the Couchbase plugin.
+
+* After performing the authentication (in the default config, just enter any username), the browser will redirect to
+http://localhost/callback with a `code` parameter. Use the `code` parameter in the next request. The `code` is only
 valid for 30 seconds in the default config.
 
 ```
-curl -k https://login.curity.local/oauth/v2/oauth-token -d 'grant_type=authorization_code&client_id=oauth-tools&client_secret=s3cr3t'&redirect_uri=http%3A%2F%2Flocalhost%2Fcallback&code=<CODE>
+curl -k https://login.curity.local/oauth/v2/oauth-token -d 'grant_type=authorization_code&client_id=oauth-tools&client_secret=s3cr3t&redirect_uri=http%3A%2F%2Flocalhost%2Fcallback&code=<CODE>'
 ```
 This request will return an `access_token` and `refresh_token`, make sure both tokens are usable in the token
 introspection.
+
+This part tests that its possible to lookup a `Nonce` and the creation of a `Delegation` and `Token` using the Couchbase plugin.
 
 ### Refresh token
 The `refresh_token` received in the Code flow can be used to obtain new `access_tokens`. Run this command to test it.
 ```
 curl -k https://login.curity.local/oauth/v2/oauth-token -d 'grant_type=refresh_token&client_id=oauth-tools&client_secret=s3cr3t&refresh_token=<REFRESH_TOKEN>'
 ```
-The request should return bot a new `access_token` and a new `refresh_token`. Repeating the request with the old
+The request should return both a new `access_token` and a new `refresh_token`. Repeating the request with the old
 `refresh_token` should fail, but the new `refresh_token` should succeed.
 
+This flow tests that its possible to lookup `Token` and `Delegation` using the Couchbase plugin.
 
 ## More Information
 
